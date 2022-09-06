@@ -1,18 +1,84 @@
 ---
-title: "Basic communication theory and practice"
-author: "Emi Tanaka"
-date: "2022-07-25"
-categories: [lecture]
+title: "Breaking FIFA down"
+author: "Dhruv Nirmal"
+date: "2022-09-06"
+categories: [FIFA]
 image: "image.jpg"
 ---
 
-## Aims
+```{r setup, include = TRUE, echo = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  eval = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 8,
+  fig.height = 6,
+  fig.pos = "H"
+)
+```
 
-* Basic communication theory and its relevancy with communicating with data
-* Demonstrate communication competency by selecting appropriate behaviour based on audience and self monitoring
-* Identify and apply rhetorical elements to improve data storytelling 
-* Clearly articulate and express technical problems for others to help you
+```{r}
+library(tidyverse)
+library(kableExtra)
+data <- read_csv("/Users/dhruvnirmal/Desktop/ETC5523/blog-DhruvNirmal/week11_fifa_audience.csv")
+```
 
-## Slides
+```{r}
+data_1 <- data %>%
+  select(confederation, tv_audience_share, population_share) %>%
+  pivot_longer(!confederation,
+               names_to = "viewership_type",
+               values_to = "percentage") %>%
+  group_by(confederation, viewership_type) %>%
+  summarise(contribution = sum(percentage))
+```
 
-<iframe src="https://cwd.numbat.space/lectures/lecture-01.html" style="border: 1px solid black;" width="100%" height = "400px"></iframe>
+```{r, plot1}
+ggplot(data_1,
+       aes(x = reorder(confederation, contribution),
+           y = contribution,
+           fill = viewership_type)) +
+  geom_bar(stat = "identity", 
+           position = "dodge") +
+  xlab("Confederation") +
+  ylab("percentage") +
+  labs(title = "Comparison between population share and tv audience share for every confederation") +
+  labs(fill = "Population share") +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5),
+        text = element_text(size = 12))  
+
+```
+
+```{r}
+data_2 <- data %>%
+  group_by(confederation) %>%
+  summarise("FIFA_members" = n(),
+            "GLOBAL POP" = sum(population_share),
+            "WORLD CUP TV AUDIENCE" = sum(tv_audience_share),
+            "GDP-WEIGHTED TV AUDIENCE" = sum(gdp_weighted_share))
+
+table <- data_2 %>%
+  summarise("FIFA_members" = (FIFA_members/sum(FIFA_members))*100,
+            "GLOBAL POP" = (`GLOBAL POP`/sum(`GLOBAL POP`))*100,
+            "WORLD CUP TV AUDIENCE" = (`WORLD CUP TV AUDIENCE`/sum(`WORLD CUP TV AUDIENCE`))*100,
+            "GDP-WEIGHTED TV AUDIENCE" = (`GDP-WEIGHTED TV AUDIENCE`/sum(`GDP-WEIGHTED TV AUDIENCE`))*100)
+
+table1 <- table %>%
+  add_column(Confederation = c("AFC (Asia)", "CAF (Africa)", "CONCACAF (N. America)", 
+                               "CONMEBOL (S. America)", "OFC (Oceania)", "UEFA (Europe)"),
+             .before  = "FIFA_members") 
+  
+```
+
+```{r, table1}
+p <- knitr::kable(table1, booktabs = TRUE, "html",
+             caption = "The Most Common Game Mechanics") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "hold_position"), 
+                full_width = F,
+                font_size = 12) %>%
+  kable_material_dark()
+p
+```
+
