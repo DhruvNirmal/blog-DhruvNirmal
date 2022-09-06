@@ -1,10 +1,41 @@
 ---
-title: "Breaking FIFA down"
+title: "FIFA confederations"
 author: "Dhruv Nirmal"
-date: "2022-09-06"
+date: "2022-09-05"
 categories: [FIFA]
 image: "image.jpg"
 ---
+
+<h1>
+Data Desription
+</h1>
+<div>
+  <p>
+  The [FIFA audience data set](https://github.com/rfordatascience/tidytuesday/blob/master/data/2018/2018-06-12) provides information about
+  the different FIFA confederations (competitions) and all the
+  countries that participate in them. It also shows each country's population 
+  share and FIFA TV audience share in the world. I have
+  analysed and to tried show a difference betwween both the
+  variables for all the competitions. The dataset also provides
+  vital information about each country's weighted share to GDP.
+  </p>
+</div>
+
+<h1>
+Variables
+</h1>
+<div>
+  <ul>
+    <li> **country**:	FIFA member country
+    <li> **confederation**:	Confederation to which country belongs
+    <li> **population_share**:	Country's share of global population 
+    (percentage)
+    <li> **tv_audience_share**:	Country's share of global world cup TV Audience 
+    (percentage)
+    <li> **gdp_weighted_share**:	Country's GDP-weighted audience share 
+    (percentage)
+  </ul>
+</div>
 
 ```{r setup, include = TRUE, echo = FALSE}
 knitr::opts_chunk$set(
@@ -24,13 +55,23 @@ library(kableExtra)
 data <- read_csv("/Users/dhruvnirmal/Desktop/ETC5523/blog-DhruvNirmal/week11_fifa_audience.csv")
 ```
 
+<h2>
+Data alteration
+</h2>
+
+<p>
+The graph belows shows the difference between cumulative population share(%) and 
+TV audience share(%) of countries participation in different confederations. This 
+is achieved by grouping the data by confedration.
+</p>
+
 ```{r}
 data_1 <- data %>%
   select(confederation, tv_audience_share, population_share) %>%
   pivot_longer(!confederation,
-               names_to = "viewership_type",
+               names_to = "share_type",
                values_to = "percentage") %>%
-  group_by(confederation, viewership_type) %>%
+  group_by(confederation, share_type) %>%
   summarise(contribution = sum(percentage))
 ```
 
@@ -38,18 +79,44 @@ data_1 <- data %>%
 ggplot(data_1,
        aes(x = reorder(confederation, contribution),
            y = contribution,
-           fill = viewership_type)) +
+           fill = share_type)) +
   geom_bar(stat = "identity", 
            position = "dodge") +
   xlab("Confederation") +
   ylab("percentage") +
   labs(title = "Comparison between population share and tv audience share for every confederation") +
-  labs(fill = "Population share") +
+  labs(fill = "Share") +
   theme_classic() +
   theme(plot.title = element_text(hjust = 0.5),
         text = element_text(size = 12))  
 
 ```
+
+<h1>
+Variables
+</h1>
+<div>
+  <ul>
+    <li> **FIFA_members**:	Proportion of countries per confederation (percentage)
+    <li> **GLOBAL POP**: Population share in the world contributed by countries per 
+    confederation (percentage)
+    <li> **WORLD CUP TV AUDIENCE**: TV audience share in the world contributed by 
+    countries per confederation (percentage)
+    <li> **GDP-WEIGHTED TV AUDIENCE**: Confederation's GDP-weighted audience 
+    share (percentage)
+  </ul>
+</div>
+
+
+<h2>
+Data alteration
+</h2>
+
+<p>
+For each confederation I have calculated the total contribution in population 
+share, TV audience share and GDP-weighted share to show the overall contribution 
+of each confedeeration. 
+</p>
 
 ```{r}
 data_2 <- data %>%
