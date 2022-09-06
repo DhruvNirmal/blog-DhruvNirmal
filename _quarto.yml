@@ -2,15 +2,17 @@ project:
   type: website
 
 website:
-  title: "blog-template"
+  title: "FIFA CONFEDERATIONS"
   navbar:
     right:
       - about.qmd
       - icon: github
-        href: https://github.com/etc5523-2022
+        href: https://github.com/DhruvNirmal
+      - icon: linkedin
+        href: https://www.linkedin.com/feed/
 format:
   html:
-    theme: cosmo
+    theme: superhero
     css: styles.css
 
 

@@ -2,12 +2,25 @@
 title: "About"
 image: profile.jpg
 about:
-  template: jolla
+  template: solana
   links:
     - icon: github
       text: Github
-      href: https://github.com/etc5523-2022
+      href: https://github.com/DhruvNirmal
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/feed/
 
 ---
 
-This is a blog template for the ETC5523 Communicating with Data assessment at Monash University.
+
+
+<div>
+  <p>
+  My name is Dhruv Nirmal and this is a blog template for the ETC5523 
+  Communicating with Data assessment at Monash University. Football being a major
+  partof my life I decided to choose data-set related to FIFA
+  audience to build my first Blog. For the purpose of analyzing and explaining 
+  the data I decided to explore the data by **confederations**.  
+  </p>
+</div>
